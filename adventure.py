@@ -28,14 +28,6 @@ def acquire_item(inventory, item):
     inventory.append(item)
     print(f"You acquired a {item}!")
     return inventory
-def display_inventory(inventory):
-    """Displays the player's inventory."""
-    if not inventory:
-        print("Your inventory is empty.")
-    else:
-        print("Your inventory:")
-        for index, item in enumerate(inventory, start=1):
-            print(f"{index}. {item}")
 def find_clue(clues, new_clue):
     """Adds a new unique clue to the clues set."""
     if new_clue in clues:
@@ -117,10 +109,12 @@ def handle_path_choice(player_stats):
     return player_stats
 def display_inventory(inventory):
     """Displays the player's inventory."""
-    if inventory:
-        print(", ".join(inventory))
+    if not inventory:
+        print("Your inventory is empty.")
     else:
-        print("Empty.")
+        print("Your inventory:")
+        for index, item in enumerate(inventory, start=1):
+            print(f"{index}. {item}")
 def check_for_treasure(treasure):
     """Checks if the player has obtained a treasure."""
     if treasure:
