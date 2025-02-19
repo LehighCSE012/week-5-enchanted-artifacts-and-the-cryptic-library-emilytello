@@ -78,8 +78,7 @@ def combat_encounter(player_stats, monster_health, has_treasure):
         if monster_health > 0:
             monster_attack = random.randint(5, 15)
             player_stats['health'] -= monster_attack
-            print(f"The monster strikes for {monster_attack} damage! Your health: 
-            {player_stats['health']}")
+            print(f"The monster strikes for {monster_attack} damage! Your health: {player_stats['health']}")
     if player_stats['health'] <= 0:
         print("You have been defeated!")
         return None
