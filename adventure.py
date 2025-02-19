@@ -50,9 +50,11 @@ def enter_dungeon(player_stats, inventory, dungeon_rooms, clues, artifacts):
     for index, room in enumerate(dungeon_rooms):
         try:
             if not isinstance(room, tuple) or len(room) != 4:
-                raise ValueError(f"Room {index} is not a valid 4-element tuple: {room}")
+                raise TypeError(f"Room {index} is not a valid 4-element tuple: {room}")
             room_name, item, challenge_type, challenge_outcome = room
             print(f"\nEntering: {room_name}")
+            if challenge_type in ("puzzle", "trap") and not isinstance(challenge_outcome, tuple):
+                raise TypeError(f"Invalid challenge_outcome for {room_name}: Must be a tuple.")
             if room_name == "Cryptic Library":
                 print("A vast library filled with ancient, cryptic texts.")
                 clue_list = [
@@ -90,8 +92,10 @@ def enter_dungeon(player_stats, inventory, dungeon_rooms, clues, artifacts):
             if item:
                 print(f"You found a {item}!")
                 inventory = acquire_item(inventory, item)
-        except ValueError as e:
-            print(f"Error in dungeon setup: {e}. Skipping room.")
+                inventory = acquire_item(inventory, item)
+        except TypeError as e:
+            print(f"Error in dungeon setup: {e}. Raising TypeError.")
+            raise
     return player_stats, inventory, clues, artifacts
 def combat_encounter(player_stats, monster_health, has_treasure):
     """Handles combat with a monster."""
