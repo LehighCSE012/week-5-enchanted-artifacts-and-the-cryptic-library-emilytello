@@ -48,7 +48,7 @@ def enter_dungeon(player_stats, inventory, dungeon_rooms, clues):
             for clue in found_clues:
                 clues = find_clue(clues, clue)
             if "staff_of_wisdom" in inventory:
-                print("With the Staff of Wisdom, you understand the meaning of the", 
+                print("With the Staff of Wisdom, you understand the meaning of the",
                 " clues and can bypass a puzzle challenge later.")
         elif challenge_type == "puzzle":
             success = random.choice([True, False])
@@ -113,9 +113,10 @@ def check_for_treasure(treasure):
 def main():
     """Main game loop."""
     dungeon_rooms = [
-        ("Dusty library", "key", "puzzle", 
+        ("Dusty library", "key", "puzzle",
         ("Solved puzzle!", "Puzzle unsolved.", -5)),
-        ("Narrow passage, creaky floor", "torch", "trap", ("Avoided trap!", "Triggered trap!", -10)),
+        ("Narrow passage, creaky floor", "torch", "trap",
+        ("Avoided trap!", "Triggered trap!", -10)),
         ("Grand hall, shimmering pool", "healing potion", "none", None),
         ("Small room, locked chest", "treasure", "puzzle", ("Cracked code!", "Chest locked.", -5)),
         ("Cryptic Library", None, "library", None)
@@ -156,7 +157,8 @@ def main():
                 artifact_name)
                 display_player_status(player_stats)
         if player_stats['health'] > 0:
-            player_stats, inventory, clues = enter_dungeon(player_stats, inventory, dungeon_rooms, clues)
+            player_stats, inventory, clues =
+            enter_dungeon(player_stats, inventory, dungeon_rooms, clues)
             print("\n--- Game End ---")
             display_player_status(player_stats)
             print("Final Inventory:")
