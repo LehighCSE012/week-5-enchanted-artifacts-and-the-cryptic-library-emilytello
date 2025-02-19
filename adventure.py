@@ -50,7 +50,6 @@ def enter_dungeon(player_stats, inventory, dungeon_rooms, clues, artifacts):
     for index, room in enumerate(dungeon_rooms):
         try:
             if not isinstance(room, tuple) or len(room) != 4:
-                raise ValueError(f"Room {index} is not a valid 4-element tuple: {room}")
                 raise TypeError(f"Room {index} is not a valid 4-element tuple: {room}")
             room_name, item, challenge_type, challenge_outcome = room
             print(f"\nEntering: {room_name}")
@@ -68,8 +67,10 @@ def enter_dungeon(player_stats, inventory, dungeon_rooms, clues, artifacts):
                 for clue in found_clues:
                     clues = find_clue(clues, clue)
                 if "staff_of_wisdom" in inventory:
-                    print("The Staff of Wisdom hums, and the ancient texts become clearer.")
-                    print("You now understand the clues and can bypass a future puzzle with your knowledge.")
+                    print(
+                        "With the Staff of Wisdom, you understand the meaning of the "
+                        "clues and can bypass a puzzle challenge later."
+                    )
             elif challenge_type == "puzzle":
                 if not isinstance(challenge_outcome, tuple) or len(challenge_outcome) != 3:
                     raise ValueError(f"Invalid challenge outcome format in room {room_name}")
@@ -91,9 +92,7 @@ def enter_dungeon(player_stats, inventory, dungeon_rooms, clues, artifacts):
             if item:
                 print(f"You found a {item}!")
                 inventory = acquire_item(inventory, item)
-        except ValueError as e:
-            print(f"Error in dungeon setup: {e}. Skipping room.")
-            inventory = acquire_item(inventory, item)
+                inventory = acquire_item(inventory, item)
         except TypeError as e:
             print(f"Error in dungeon setup: {e}. Raising TypeError.")
             raise
