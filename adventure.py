@@ -172,4 +172,3 @@ def main():
                 print("No clues.")
 if __name__ == "__main__":
     main()
-    
