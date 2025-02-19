@@ -23,7 +23,7 @@ def discover_artifact(player_stats, artifacts, artifact_name):
     else:
         print("You found nothing of interest.")
     return player_stats, artifacts
- def acquire_item(item, inventory):
+def acquire_item(item, inventory):
     """Adds an item to the player's inventory if not already present."""
     if item not in inventory:
     inventory.append(item)
