@@ -78,7 +78,8 @@ def combat_encounter(player_stats, monster_health, has_treasure):
         if monster_health > 0:
             monster_attack = random.randint(5, 15)
             player_stats['health'] -= monster_attack
-            print(f"The monster strikes for {monster_attack} damage! Your health: {player_stats['health']}")
+            print(f"The monster strikes for {monster_attack} damage!",
+            "Your health: {player_stats['health']}")
     if player_stats['health'] <= 0:
         print("You have been defeated!")
         return None
@@ -112,7 +113,8 @@ def check_for_treasure(treasure):
 def main():
     """Main game loop."""
     dungeon_rooms = [
-        ("Dusty library", "key", "puzzle", ("Solved puzzle!", "Puzzle unsolved.", -5)),
+        ("Dusty library", "key", "puzzle", 
+        ("Solved puzzle!", "Puzzle unsolved.", -5)),
         ("Narrow passage, creaky floor", "torch", "trap", ("Avoided trap!", "Triggered trap!", -10)),
         ("Grand hall, shimmering pool", "healing potion", "none", None),
         ("Small room, locked chest", "treasure", "puzzle", ("Cracked code!", "Chest locked.", -5)),
@@ -150,7 +152,8 @@ def main():
             artifact_keys = list(artifacts.keys())
             if artifact_keys:
                 artifact_name = random.choice(artifact_keys)
-                player_stats, artifacts = discover_artifact(player_stats, artifacts, artifact_name)
+                player_stats, artifacts = discover_artifact(player_stats, artifacts,
+                artifact_name)
                 display_player_status(player_stats)
         if player_stats['health'] > 0:
             player_stats, inventory, clues = enter_dungeon(player_stats, inventory, dungeon_rooms, clues)
