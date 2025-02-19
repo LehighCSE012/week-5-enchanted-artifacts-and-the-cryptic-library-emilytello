@@ -157,8 +157,9 @@ def main():
                 artifact_name)
                 display_player_status(player_stats)
         if player_stats['health'] > 0:
-            player_stats, inventory, clues =
-            enter_dungeon(player_stats, inventory, dungeon_rooms, clues)
+            player_stats, inventory, clues = enter_dungeon(
+            player_stats, inventory, dungeon_rooms, clues
+            )
             print("\n--- Game End ---")
             display_player_status(player_stats)
             print("Final Inventory:")
