@@ -24,9 +24,18 @@ def discover_artifact(player_stats, artifacts, artifact_name):
         print("You found nothing of interest.")
     return player_stats, artifacts
 def acquire_item(inventory, item):
-    """Adds an item to the player's inventory."""
-    inventory.append(item)
-    print(f"You acquired a {item}!")
+    """Adds an item to the player's inventory, ensuring inventory is always a list."""
+    print(f"DEBUG: Before adding {item}, inventory is {type(inventory)}: {inventory}")
+    if inventory is None:
+        inventory = []
+    if not isinstance(inventory, list):
+        raise TypeError("Error: Inventory must be a list.")
+    if item not in inventory:
+        inventory.append(item)
+        print(f"You acquired a {item}!")
+    else:
+        print(f"You already have a {item}.")
+    print(f"DEBUG: After adding {item}, inventory is {type(inventory)}: {inventory}")
     return inventory
 def find_clue(clues, new_clue):
     """Adds a new unique clue to the clues set."""
@@ -37,43 +46,52 @@ def find_clue(clues, new_clue):
         print(f"You discovered a new clue: {new_clue}")
     return clues
 def enter_dungeon(player_stats, inventory, dungeon_rooms, clues, artifacts):
-    """Handles dungeon exploration and events."""
-    for room in dungeon_rooms:
-        room_name, item, challenge_type, challenge_outcome = room
-        print(f"\nEntering: {room_name}")
-        if room_name == "Cryptic Library":
-            print("A vast library filled with ancient, cryptic texts.")
-            clue_list = [
-                "The treasure is hidden where the dragon sleeps.",
-                "The key lies with the gnome.",
-                "Beware the shadows.",
-                "The amulet unlocks the final door."
-            ]
-            found_clues = random.sample(clue_list, 2)
-            for clue in found_clues:
-                clues = find_clue(clues, clue)
-            if "staff_of_wisdom" in inventory:
-                print(
-                    "With the Staff of Wisdom, you understand the meaning of the ",
-                    "clues and can bypass a puzzle challenge later."
-                )
-        elif challenge_type == "puzzle":
-            success = random.choice([True, False])
-            if success:
-                print(challenge_outcome[0])
-            else:
-                print(challenge_outcome[1])
-                player_stats['health'] -= abs(challenge_outcome[2])
-        elif challenge_type == "trap":
-            triggered = random.choice([True, False])
-            if triggered:
-                print(challenge_outcome[1])
-                player_stats['health'] -= abs(challenge_outcome[2])
-            else:
-                print(challenge_outcome[0])
-        if item:
-            print(f"You found a {item}!")
-            inventory = acquire_item(item, inventory)
+    """Handles dungeon exploration and events, ensuring correct room structure."""
+    for index, room in enumerate(dungeon_rooms):
+        try:
+            if not isinstance(room, tuple) or len(room) != 4:
+                raise ValueError(f"Room {index} is not a valid 4-element tuple: {room}")
+            room_name, item, challenge_type, challenge_outcome = room
+            print(f"\nEntering: {room_name}")
+            if room_name == "Cryptic Library":
+                print("A vast library filled with ancient, cryptic texts.")
+                clue_list = [
+                    "The treasure is hidden where the dragon sleeps.",
+                    "The key lies with the gnome.",
+                    "Beware the shadows.",
+                    "The amulet unlocks the final door."
+                ]
+                found_clues = random.sample(clue_list, 2)
+                for clue in found_clues:
+                    clues = find_clue(clues, clue)
+                if "staff_of_wisdom" in inventory:
+                    print(
+                        "With the Staff of Wisdom, you understand the meaning of the "
+                        "clues and can bypass a puzzle challenge later."
+                    )
+            elif challenge_type == "puzzle":
+                if not isinstance(challenge_outcome, tuple) or len(challenge_outcome) != 3:
+                    raise ValueError(f"Invalid challenge outcome format in room {room_name}")
+                success = random.choice([True, False])
+                if success:
+                    print(challenge_outcome[0])
+                else:
+                    print(challenge_outcome[1])
+                    player_stats['health'] -= abs(challenge_outcome[2])
+            elif challenge_type == "trap":
+                if not isinstance(challenge_outcome, tuple) or len(challenge_outcome) != 3:
+                    raise ValueError(f"Invalid challenge outcome format in room {room_name}")
+                triggered = random.choice([True, False])
+                if triggered:
+                    print(challenge_outcome[1])
+                    player_stats['health'] -= abs(challenge_outcome[2])
+                else:
+                    print(challenge_outcome[0])
+            if item:
+                print(f"You found a {item}!")
+                inventory = acquire_item(inventory, item)
+        except ValueError as e:
+            print(f"Error in dungeon setup: {e}. Skipping room.")
     return player_stats, inventory, clues, artifacts
 def combat_encounter(player_stats, monster_health, has_treasure):
     """Handles combat with a monster."""
