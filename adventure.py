@@ -47,13 +47,12 @@ def find_clue(clues, new_clue):
     return clues
 def enter_dungeon(player_stats, inventory, dungeon_rooms, clues, artifacts):
     """Handles dungeon exploration and events, ensuring correct room structure."""
-    bypass_puzzle = False
     for index, room in enumerate(dungeon_rooms):
         try:
             if not isinstance(room, tuple) or len(room) != 4:
                 raise TypeError(f"Room {index} is not a valid 4-element tuple: {room}")
             room_name, item, challenge_type, challenge_outcome = room
-            print(f"\nYou enter the {room_name}")
+            print(f"\nEntering: {room_name}")
             if challenge_type in ("puzzle", "trap") and not isinstance(challenge_outcome, tuple):
                 raise TypeError(f"Invalid challenge_outcome for {room_name}: Must be a tuple.")
             if room_name == "Cryptic Library":
@@ -69,24 +68,21 @@ def enter_dungeon(player_stats, inventory, dungeon_rooms, clues, artifacts):
                     clues = find_clue(clues, clue)
                 if "staff_of_wisdom" in inventory:
                     print("The Staff of Wisdom hums, and the ancient texts become clearer.")
-                    print("You now understand the clues and can bypass a future puzzle with your knowledge.")
-                    bypass_puzzle = True
+                    print(
+                    "You now understand the clues and can bypass a future puzzle with your knowledge."
+                    )
             elif challenge_type == "puzzle":
-                if not isinstance(challenge_outcome, tuple) or len(challenge_outcome) != 3:
-                    raise ValueError(f"Invalid challenge outcome format in room {room_name}")
-                if bypass_puzzle:
-                    print("Using your knowledge from the Cryptic Library, you bypass this puzzle effortlessly!")
-                    bypass_puzzle = False
+                if len(challenge_outcome) != 3:
+                    raise TypeError(f"Invalid challenge_outcome format in room {room_name}. Expected 3 elements.")
+                success = random.choice([True, False])
+                if success:
+                    print(challenge_outcome[0])  # Puzzle solved
                 else:
-                    success = random.choice([True, False])
-                    if success:
-                        print(challenge_outcome[0])
-                    else:
-                        print(challenge_outcome[1])
-                        player_stats['health'] -= abs(challenge_outcome[2])
+                    print(challenge_outcome[1])  # Puzzle failed
+                    player_stats['health'] -= abs(challenge_outcome[2])  # Deduct health
             elif challenge_type == "trap":
-                if not isinstance(challenge_outcome, tuple) or len(challenge_outcome) != 3:
-                    raise ValueError(f"Invalid challenge outcome format in room {room_name}")
+                if len(challenge_outcome) != 3:
+                    raise TypeError(f"Invalid challenge_outcome format in room {room_name}. Expected 3 elements.")
                 triggered = random.choice([True, False])
                 if triggered:
                     print(challenge_outcome[1])
@@ -95,7 +91,6 @@ def enter_dungeon(player_stats, inventory, dungeon_rooms, clues, artifacts):
                     print(challenge_outcome[0])
             if item:
                 print(f"You found a {item}!")
-                inventory = acquire_item(inventory, item)
                 inventory = acquire_item(inventory, item)
         except TypeError as e:
             print(f"Error in dungeon setup: {e}. Raising TypeError.")
