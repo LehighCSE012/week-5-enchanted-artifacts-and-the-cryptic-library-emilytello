@@ -23,6 +23,14 @@ def discover_artifact(player_stats, artifacts, artifact_name):
     else:
         print("You found nothing of interest.")
     return player_stats, artifacts
+    def acquire_item(item, inventory):
+    """Adds an item to the player's inventory if not already present."""
+    if item not in inventory:
+        inventory.append(item)
+        print(f"You have acquired {item}!")
+    else:
+        print(f"You already have {item}.")
+    return inventory
 def find_clue(clues, new_clue):
     """Adds a new unique clue to the clues set."""
     if new_clue in clues:
@@ -31,7 +39,7 @@ def find_clue(clues, new_clue):
         clues.add(new_clue)
         print(f"You discovered a new clue: {new_clue}")
     return clues
-def enter_dungeon(player_stats, inventory, dungeon_rooms, clues):
+def enter_dungeon(player_stats, inventory, dungeon_rooms, clues, artifacts):
     """Handles dungeon exploration and events."""
     for room in dungeon_rooms:
         room_name, item, challenge_type, challenge_outcome = room
@@ -48,26 +56,28 @@ def enter_dungeon(player_stats, inventory, dungeon_rooms, clues):
             for clue in found_clues:
                 clues = find_clue(clues, clue)
             if "staff_of_wisdom" in inventory:
-                print("With the Staff of Wisdom, you understand the meaning of the",
-                " clues and can bypass a puzzle challenge later.")
+                print(
+                    "With the Staff of Wisdom, you understand the meaning of the ",
+                    "clues and can bypass a puzzle challenge later."
+                )
         elif challenge_type == "puzzle":
             success = random.choice([True, False])
             if success:
                 print(challenge_outcome[0])
             else:
                 print(challenge_outcome[1])
-                player_stats['health'] += challenge_outcome[2]
+                player_stats['health'] -= abs(challenge_outcome[2])
         elif challenge_type == "trap":
             triggered = random.choice([True, False])
             if triggered:
                 print(challenge_outcome[1])
-                player_stats['health'] += challenge_outcome[2]
+                player_stats['health'] -= abs(challenge_outcome[2])
             else:
                 print(challenge_outcome[0])
         if item:
             print(f"You found a {item}!")
-            inventory.append(item)
-    return player_stats, inventory, clues
+            inventory = acquire_item(item, inventory)
+    return player_stats, inventory, clues, artifacts
 def combat_encounter(player_stats, monster_health, has_treasure):
     """Handles combat with a monster."""
     print("\nA monster appears!")
