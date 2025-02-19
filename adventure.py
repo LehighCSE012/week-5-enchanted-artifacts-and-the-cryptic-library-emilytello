@@ -23,14 +23,19 @@ def discover_artifact(player_stats, artifacts, artifact_name):
     else:
         print("You found nothing of interest.")
     return player_stats, artifacts
-def acquire_item(item, inventory):
-    """Adds an item to the player's inventory if not already present."""
-    if item not in inventory:
-        inventory.append(item)
-        print(f"You have acquired {item}!")
-    else:
-        print(f"You already have {item}.")
+def acquire_item(inventory, item):
+    """Adds an item to the player's inventory."""
+    inventory.append(item)
+    print(f"You acquired a {item}!")
     return inventory
+def display_inventory(inventory):
+    """Displays the player's inventory."""
+    if not inventory:
+        print("Your inventory is empty.")
+    else:
+        print("Your inventory:")
+        for index, item in enumerate(inventory, start=1):
+            print(f"{index}. {item}")
 def find_clue(clues, new_clue):
     """Adds a new unique clue to the clues set."""
     if new_clue in clues:
